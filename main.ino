@@ -43,7 +43,7 @@ void loop ()
     isPressed = true;  //set to true, so this code will not run again until button released
 
     selector++; // this is done after the runEffect(), so case 0 will be executed on the first button press 
-    if (selector > 6) {
+    if (selector > 7) {
       selector = 0;
     }
   } else if (digitalRead(btn) == HIGH)
@@ -72,26 +72,31 @@ void runEffect(){
                 break;
               }
     case 2  : {
-                // Arrow Left
-                ArrowLeft(strip.Color(255, 150, 0), 15); //Amber Left Signal
+                 // Blue WigWag
+                WigWag(strip.Color(0, 0, 255), 75);
                 break;
               }
     case 3  : {
                 // Arrow Right
-                ArrowRight(strip.Color(255, 150, 0), 15); //Amber Right Signal
+                ArrowRight(strip.Color(255, 150, 0), 30); //Amber Right Signal
                 break;
               }
     case 4  : {
+                // Arrow Left
+                ArrowLeft(strip.Color(255, 150, 0), 30); //Amber Left Signal
+                break;
+              }
+    case 5  : {
+                // Amber Center Out 
+                CenterOut(strip.Color(255, 150, 0), 30); //Amber Right Signal
+                break;
+              }
+    case 6  : {
                 // Amber WigWag
                 WigWag(strip.Color(255, 150, 0), 191); 
                 break;
               }
-    case 5  : {
-                // Blue WigWag
-                WigWag(strip.Color(0, 0, 255), 75);
-                break;
-              }
-    case 6  : {
+    case 7  : {
                 // OFF
                 ClearLights();
                 break;
@@ -182,7 +187,6 @@ void AllOn(uint32_t c) {
   strip.show();
 }
 
-// WIP: Triple Flash
 void TripFlash(uint32_t c, uint8_t wait) {
   for(int x = 0; x < 3; x++) {
     for (int i = 0; i < strip.numPixels(); i = i + 1) {
@@ -200,15 +204,24 @@ void TripFlash(uint32_t c, uint8_t wait) {
   delay(150);
 }
 
-/* WIP: CENTER-OUT TRAFFIC ADVISOR **********
-void BlinkOuter(uint32_t c, uint8_t wait) {
-    strip.setPixelColor(strip.numPixels() - 1, c);
-    strip.setPixelColor(0, c);
-    strip.show();
-    delay(wait);
-    strip.setPixelColor(strip.numPixels() - 1, 0);
-    strip.setPixelColor(0, 0);
+void CenterOut(uint32_t c, uint8_t wait) {
+uint16_t j = 1;
+uint16_t HALFWAY = (strip.numPixels() / 2) - 1;
+
+    for (uint16_t i = HALFWAY; i < strip.numPixels(); i++)
+    {
+        strip.setPixelColor(HALFWAY - j, c);    //scans to the right
+        strip.setPixelColor(i, c);              //scans to the left 
+        j++;
+        strip.show();
+        delay(wait);
+          if (j==29){
+          j = 1;
+          }
+    }
+        for (uint16_t i = 0; i < strip.numPixels(); i++) {
+      strip.setPixelColor(i, 0);
+    }
     strip.show();
     delay(wait);
 }
-*/
