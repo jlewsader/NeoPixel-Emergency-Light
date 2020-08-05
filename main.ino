@@ -9,7 +9,7 @@
 #include <avr/power.h>
 #endif
 #define LEDPIN 0
-#define BUTTONPIN 2
+#define BUTTONPIN 4
 
 int selector = 0;
 unsigned long button_time = 0;  
@@ -66,18 +66,19 @@ void loop () {
         break;
       }
     case 3  : {
-        // Arrow Right
-        ArrowRight(strip.Color(255, 150, 0), 30); //Amber Right Signal
+        // Amber Right
+        ClearLights();
+        ArrowRight(strip.Color(255, 150, 0), 30); 
         break;
       }
     case 4  : {
-        // Arrow Left
-        ArrowLeft(strip.Color(255, 150, 0), 30); //Amber Left Signal
+        // Amber Left
+        ArrowLeft(strip.Color(255, 150, 0), 30); 
         break;
       }
     case 5  : {
         // Amber Center Out
-        CenterOut(strip.Color(255, 150, 0), 30); //Amber Right Signal
+        CenterOut(strip.Color(255, 150, 0), 30); 
         break;
       }
     case 6  : {
@@ -197,7 +198,7 @@ void TripFlash(uint32_t c, uint8_t wait) {
     strip.show();
     delay(wait);
   }
-  delay(150);
+  delay(wait * 4);
 }
 
 void CenterOut(uint32_t c, uint8_t wait) {
