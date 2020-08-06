@@ -22,6 +22,7 @@ I am now currently working on ideas on how to enclose and mount the light in the
 ### BOM
 
 ID | Part name | Part number | Quantity
+-- | --------- | ----------- | --------
 R1 | 10k Resistor | 1234-abcd | 10
 L1 | Red LED | 2345-asdf | 5
 A1 | Arduino | ABX00066 | 1
