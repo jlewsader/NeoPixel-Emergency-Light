@@ -10,6 +10,7 @@
 #endif
 #define LEDPIN 0
 #define BUTTONPIN 4
+#define NUM_PIXELS 60
 
 int selector = 0;
 unsigned long button_time = 0;
@@ -23,7 +24,7 @@ boolean cancelLoop = false;
 //   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, LEDPIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, LEDPIN, NEO_GRB + NEO_KHZ800);
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
@@ -240,7 +241,7 @@ void CenterOut(uint32_t c, uint8_t wait) {
       j++;
       strip.show();
       delay(wait);
-      if (j == 29) {  // FIX
+      if (j == HALFWAY) {  
         j = 1;
       }
     } else {
