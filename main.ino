@@ -12,8 +12,9 @@
 #define BUTTONPIN 4
 
 int selector = 0;
-unsigned long button_time = 0;  
-unsigned long last_button_time = 0; 
+unsigned long button_time = 0;
+unsigned long last_button_time = 0;
+boolean cancelLoop = false;
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -30,15 +31,16 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, LEDPIN, NEO_GRB + NEO_KHZ800);
 // on a live circuit...if you must, connect GND first.
 
 ICACHE_RAM_ATTR void increment() {
-  
+
   button_time = millis();
   //check to see if increment() was called in the last 250 milliseconds
   if (button_time - last_button_time > 250)
-    {
-      selector++;
-      if (selector > 6) selector = 0;
-      last_button_time = button_time;
-    }
+  {
+    selector++;
+    if (selector > 6) selector = 0;
+    cancelLoop = true;
+    last_button_time = button_time;
+  }
 }
 
 void setup() {
@@ -68,17 +70,17 @@ void loop () {
     case 3  : {
         // Amber Right
         ClearLights();
-        ArrowRight(strip.Color(255, 150, 0), 30); 
+        ArrowRight(strip.Color(255, 150, 0), 30);
         break;
       }
     case 4  : {
         // Amber Left
-        ArrowLeft(strip.Color(255, 150, 0), 30); 
+        ArrowLeft(strip.Color(255, 150, 0), 30);
         break;
       }
     case 5  : {
         // Amber Center Out
-        CenterOut(strip.Color(255, 150, 0), 30); 
+        CenterOut(strip.Color(255, 150, 0), 30);
         break;
       }
     case 6  : {
@@ -86,12 +88,14 @@ void loop () {
         WigWag(strip.Color(255, 150, 0), 191);
         break;
       }
-    // case 7  : {
-    //     // OFF
-    //     ClearLights();
-    //     break;
-    //   }
+      // case 7  : {
+      //     // OFF
+      //     ClearLights();
+      //     break;
+      //   }
   }
+
+  cancelLoop = false;
 }
 
 /*
@@ -105,12 +109,24 @@ void loop () {
 
 void ArrowRight(uint32_t c, uint8_t wait) {
   for (uint16_t i = 0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, c);
-    strip.show();
-    delay(wait);
+    if (cancelLoop == false) {
+      strip.setPixelColor(i, c);
+      strip.show();
+      delay(wait);
+    }
+    else {
+      ClearLights();
+      break;
+    }
   }
   for (uint16_t i = 0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, 0);
+    if (cancelLoop == false) {
+      strip.setPixelColor(i, 0);
+    }
+    else {
+      ClearLights();
+      break;
+    }
   }
   strip.show();
   delay(wait);
@@ -118,12 +134,24 @@ void ArrowRight(uint32_t c, uint8_t wait) {
 
 void ArrowLeft(uint32_t c, uint8_t wait) {
   for (uint16_t i = strip.numPixels(); i > 0 ; i--) {
-    strip.setPixelColor(i, c);
-    strip.show();
-    delay(wait);
+    if (cancelLoop == false) {
+      strip.setPixelColor(i, c);
+      strip.show();
+      delay(wait);
+    }
+    else {
+      ClearLights();
+      break;
+    }
   }
   for (uint16_t i = strip.numPixels(); i > 0 ; i--) {
-    strip.setPixelColor(i, 0);
+    if (cancelLoop == false) {
+      strip.setPixelColor(i, 0);
+    }
+    else {
+      ClearLights();
+      break;
+    }
   }
   strip.show();
   delay(wait);
@@ -205,15 +233,19 @@ void CenterOut(uint32_t c, uint8_t wait) {
   uint16_t j = 1;
   uint16_t HALFWAY = (strip.numPixels() / 2) - 1;
 
-  for (uint16_t i = HALFWAY; i < strip.numPixels(); i++)
-  {
-    strip.setPixelColor(HALFWAY - j, c);    //scans to the right
-    strip.setPixelColor(i, c);              //scans to the left
-    j++;
-    strip.show();
-    delay(wait);
-    if (j == 29) {
-      j = 1;
+  for (uint16_t i = HALFWAY; i < strip.numPixels(); i++) {
+    if (cancelLoop == false) {
+      strip.setPixelColor(HALFWAY - j, c);    //scans to the right
+      strip.setPixelColor(i, c);              //scans to the left
+      j++;
+      strip.show();
+      delay(wait);
+      if (j == 29) {  // FIX
+        j = 1;
+      }
+    } else {
+      ClearLights();
+      break;
     }
   }
   for (uint16_t i = 0; i < strip.numPixels(); i++) {
