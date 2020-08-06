@@ -1,5 +1,5 @@
 /*
-   Emergency Light Ver 1.3
+   Emergency Light Ver 1.4
    J. Lewsader
    8/2020
 */
@@ -8,33 +8,25 @@
 #ifdef __AVR__
 #include <avr/power.h>
 #endif
-#define LEDPIN 0
-#define BUTTONPIN 4
-#define NUM_PIXELS 60
+#define LEDPIN 0          // Change this to whatever pin your NeoPixel Data is using.
+#define BUTTONPIN 4       // Change this to whatever pin your switch/button is on. MAKE SURE IT WILL SUPPORT INTERRUPTS!!
+#define NUM_PIXELS 60     // Change this to the number of pixels in your strip.
 
+// Some global button variables
 int selector = 0;
 unsigned long button_time = 0;
 unsigned long last_button_time = 0;
 boolean cancelLoop = false;
 
-// Parameter 1 = number of pixels in strip
-// Parameter 2 = Arduino pin number (most are valid)
-// Parameter 3 = pixel type flags, add together as needed:
-//   NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
-//   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
-//   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
-//   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
+// See the Adafruit NeoPixel documentation for details.
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, LEDPIN, NEO_GRB + NEO_KHZ800);
 
-// IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
-// pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
-// and minimize distance between Arduino and first pixel.  Avoid connecting
-// on a live circuit...if you must, connect GND first.
-
+/* This is the Interrupt code for the momentary button/switch.
+** For use on the ESP8266, we have to place it in RAM with ICACHE_RAM_ATTR.  */
 ICACHE_RAM_ATTR void increment() {
 
   button_time = millis();
-  //check to see if increment() was called in the last 250 milliseconds
+  //check to see if increment() was called in the last 250 milliseconds. Nice little debounce.
   if (button_time - last_button_time > 250)
   {
     selector++;
@@ -52,6 +44,8 @@ void setup() {
 }
 
 void loop () {
+  /*  For strip.Color(R, G, B), use 0-255 to set intensity.
+      The last number is a delay 0-255 range.   */
   switch (selector) {
     case 0  : {
         // Triple Flash - Blue
@@ -98,13 +92,6 @@ void loop () {
 
   cancelLoop = false;
 }
-
-/*
-  For strip.Color(R, G, B), use 0-255 to set intensity
-  for each color (R)ed, (G)reen, (B)lue
-  The last number is a delay 0-255 range.
-*/
-
 
 // Effects Functions Below ************************************************
 
