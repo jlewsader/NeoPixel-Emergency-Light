@@ -21,15 +21,20 @@ I am now currently working on ideas on how to enclose and mount the light in the
 
 ### BOM
 
-ID | Part name | Part number | Quantity
+ID | Part name | Details | Quantity
 -- | --------- | ----------- | --------
-R1 | 10k Resistor | 1234-abcd | 10
-L1 | Red LED | 2345-asdf | 5
-A1 | Arduino | ABX00066 | 1
+5V | 5V+ In | Power supply input | 1
+C1 | Capacitor Polarized | 1000uf-63V | 1
+D1 | Zener Diode | 1N4001 | 1
+R1 | Resistor | 330Ω | 1
+S1 | SPST Switch | Power switch ON/OFF | 1
+S2 | SPST Mom. Switch  | Momentary switch | 1
+P1 | Adafruit Feather HUZZAH (ESP8266) | | 1
+P2 | NeoPixels | Neopixel Strip -- Black (30/m)	| 1
 
 ### Step 1: Assemble the circuit
 
-Assemble the circuit following the diagram `layout.png` attached to the sketch.
+Assemble the circuit following the [layout](https://github.com/jlewsader/NeoPixel-Emergency-Light/blob/master/layout.jpg) and [schematic](https://github.com/jlewsader/NeoPixel-Emergency-Light/blob/master/schematic.jpg) attached to the sketch.
 
 IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
@@ -38,7 +43,7 @@ on a live circuit...if you must, connect GND first.
 
 ### Step 2: Load the code
 
-Upload the code contained in this sketch on to your board.
+Upload the code [main.ino](https://github.com/jlewsader/NeoPixel-Emergency-Light/blob/master/main.ino) to your board.
 
 ## License
 My code - Public Domain  
